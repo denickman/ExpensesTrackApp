@@ -20,16 +20,30 @@ TextEditingController - хранит текущее значение текст�
 Если ты не вызовешь dispose(), то TextEditingController продолжит жить в памяти, 
 потому что на него могут быть подписаны слушатели (addListener).
 */
+
+// Properties 
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
 
-  @override
-  void dispose() {
-    _titleController.dispose();
-    _amountController.dispose();
-    super.dispose();
+// Methods 
+  void _presentDatePicker() {
+    final now = DateTime.now();
+    final firstDate = DateTime(
+      now.year - 1,
+      now.month,
+      now.day,
+    ); // today - 1 year
+    
+    showDatePicker(
+      context: context, 
+      initialDate: now, 
+      firstDate: firstDate, 
+      lastDate: now
+      );
   }
 
+// Lifecycle
+ 
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -46,21 +60,48 @@ TextEditingController - хранит текущее значение текст�
             ),
           ),
 
-          TextField(
-            controller: _amountController,
-            keyboardType: TextInputType.number,
+          Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
 
-            // keyboardType: TextInputType.text, // - TextInputType.text established by default
-            decoration: const InputDecoration(
-              // placeholder
-              prefixText: '\$ ',
-              label: Text('Amount'),
-            ),
+                  // keyboardType: TextInputType.text, // - TextInputType.text established by default
+                  decoration: const InputDecoration(
+                    // placeholder
+                    prefixText: '\$ ',
+                    label: Text('Amount'),
+                  ),
+                ),
+              ),
+
+              const SizedBox(width: 16),
+
+              Expanded(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const Text('Selected Date'),
+                    IconButton(
+                      onPressed: _presentDatePicker,
+                      icon: const Icon(Icons.calendar_month),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
 
           Row(
             children: [
-              TextButton(onPressed: () {}, child: const Text("Cancel")),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: const Text("Cancel"),
+              ),
 
               ElevatedButton(
                 onPressed: () {
@@ -75,4 +116,12 @@ TextEditingController - хранит текущее значение текст�
       ),
     );
   }
+
+   @override
+  void dispose() {
+    _titleController.dispose();
+    _amountController.dispose();
+    super.dispose();
+  }
+
 }
