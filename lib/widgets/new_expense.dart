@@ -10,12 +10,25 @@ class NewExpense extends StatefulWidget {
 }
 
 class _NewExpenseState extends State<NewExpense> {
+  /*
+IF YOU HAVE MULTIPLE FIELDS you need MULTIPLE CONTROLLERS
+TextEditingController - хранит текущее значение текста (.text),
+умеет управлять курсором, выделением,
+и рассылает уведомления слушателям (listeners) при изменении текста.
+По сути это менеджер состояния для TextField.
 
-  var _enteredTitle = '';
+Если ты не вызовешь dispose(), то TextEditingController продолжит жить в памяти, 
+потому что на него могут быть подписаны слушатели (addListener).
+*/
+  final _titleController = TextEditingController();
+  final _amountController = TextEditingController();
 
-  void _saveTitleInput(String inputValue) {
-    _enteredTitle = inputValue;
-   }
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _amountController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,27 +37,42 @@ class _NewExpenseState extends State<NewExpense> {
       child: Column(
         children: [
           TextField(
-            onChanged: _saveTitleInput,
+            controller: _titleController,
             maxLength: 50,
             // keyboardType: TextInputType.text, // - TextInputType.text established by default
-            decoration: const InputDecoration( // placeholder
-              label: Text('Title')
+            decoration: const InputDecoration(
+              // placeholder
+              label: Text('Title'),
+            ),
+          ),
+
+          TextField(
+            controller: _amountController,
+            keyboardType: TextInputType.number,
+
+            // keyboardType: TextInputType.text, // - TextInputType.text established by default
+            decoration: const InputDecoration(
+              // placeholder
+              prefixText: '\$ ',
+              label: Text('Amount'),
             ),
           ),
 
           Row(
             children: [
+              TextButton(onPressed: () {}, child: const Text("Cancel")),
+
               ElevatedButton(
                 onPressed: () {
-                  print(_enteredTitle);
-                }, 
+                  print(_titleController.text);
+                  print(_amountController.text);
+                },
                 child: Text('Save Expense'),
-              )
+              ),
             ],
-          )
+          ),
         ],
-      )
+      ),
     );
-    
   }
 }
