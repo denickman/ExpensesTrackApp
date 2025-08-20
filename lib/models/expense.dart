@@ -48,9 +48,11 @@ class Expense {
   final DateTime date;
   final Category category;
 
-
-
+// get — это тоже метод, просто вызывается как свойство.
+// А значит, если у него всего одно выражение, можно спокойно использовать стрелочную семантику =>.
   String get formattedDate {
     return formatter.format(date);
   }
+
+  String get formattedDateAlternative => formatter.format(date);
 }
