@@ -23,7 +23,7 @@ class _ExpensesState extends State<Expenses> {
 
   // Methods
   void _openAddExpenseOverlay() {
-    showModalBottomSheet(context: context, builder: (ctx) => NewExpense());
+    showModalBottomSheet(context: context, builder: (ctx) => const NewExpense());
   }
 
   // Mock Data
