@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:third_app/models/expense.dart';
+import 'package:third_app/widgets/expenses_list/expense_item.dart';
 
 class ExpensesList extends StatelessWidget {
 
@@ -25,7 +26,7 @@ class ExpensesList extends StatelessWidget {
       // itemBuilder — функция, которая вызывается Flutter’ом для каждого элемента, 
       // когда он появляется в зоне видимости.
       itemCount: expenses.length, 
-      itemBuilder: (ctx, index) => Text(expenses[index].title),
+      itemBuilder: (ctx, index) => ExpenseItem(expenses[index]),
       ); 
  
   }
