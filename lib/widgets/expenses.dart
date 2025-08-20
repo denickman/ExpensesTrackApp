@@ -33,6 +33,16 @@ class _ExpensesState extends State<Expenses> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            onPressed: () {
+              
+            },
+            icon: const Icon(Icons.add)
+            ),
+        ],
+      ),
       /*
       Column + ListView = баг, если не обернуть правильно.
 

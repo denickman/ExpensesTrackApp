@@ -4,7 +4,8 @@ import 'package:third_app/widgets/expenses.dart';
 
 void main() {
   runApp(
-    const MaterialApp(
+    MaterialApp(
+     theme: ThemeData.dark(),
       home: Expenses(),
     ),
   );

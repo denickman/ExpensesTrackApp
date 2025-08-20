@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:third_app/models/expense.dart';
 
@@ -27,40 +26,37 @@ class ExpenseItem extends StatelessWidget {
       */
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: 
-
-      // TEST EXPANDED 
-        //  Row(
-        //       children: [
-        //         Expanded(flex: 2, child: Container(height: 50,color: Colors.red)),
-        //         Expanded(flex: 1, child: Container(height: 50, color: Colors.blue)),
-        //       ],
-        //     ),
-
-        Column(
-          children: [
-            Text(expense.title),
-            const SizedBox(height: 4),
-            Row(
+        child:
+            // TEST EXPANDED
+            //  Row(
+            //       children: [
+            //         Expanded(flex: 2, child: Container(height: 50,color: Colors.red)),
+            //         Expanded(flex: 1, child: Container(height: 50, color: Colors.blue)),
+            //       ],
+            //     ),
+            Column(
               children: [
-                // Если после переменной идёт что-то ещё (метод, свойство или арифметика),
-                // то нужны фигурные скобки, чтобы Dart понял, где заканчивается переменная и начинается код:
-                // Без {} Dart не поймёт, что .toStringAsFixed(2) — это метод переменной amount
-                // toStringAsFixed 12.45678 => 12.45
-                Text('\$${expense.amount.toStringAsFixed(2)}'),
-                const Spacer(), // это гибкий заполнитель пространства внутри Row, Column или Flex.
+                Text(expense.title),
+                const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(Icons.account_balance_outlined),
-                    const SizedBox(width: 8),
-                    Text(expense.date.toString()),
-                  ]
+                    // Если после переменной идёт что-то ещё (метод, свойство или арифметика),
+                    // то нужны фигурные скобки, чтобы Dart понял, где заканчивается переменная и начинается код:
+                    // Без {} Dart не поймёт, что .toStringAsFixed(2) — это метод переменной amount
+                    // toStringAsFixed 12.45678 => 12.45
+                    Text('\$${expense.amount.toStringAsFixed(2)}'),
+                    const Spacer(), // это гибкий заполнитель пространства внутри Row, Column или Flex.
+                    Row(
+                      children: [
+                        Icon(categoryItems[expense.category]),
+                        const SizedBox(width: 8),
+                        Text(expense.formattedDate),
+                      ],
+                    ),
+                  ],
                 ),
               ],
-
             ),
-          ],
-        ),
       ),
     );
   }
