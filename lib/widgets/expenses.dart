@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:third_app/widgets/expenses_list/expenses_list.dart';
 import 'package:third_app/models/expense.dart';
@@ -36,9 +38,34 @@ class _ExpensesState extends State<Expenses> {
   }
 
   void _removeExpense(Expense expense) {
+    final expenseIndex = _registeredExpenses.indexOf(expense);
+
     setState(() {
       _registeredExpenses.remove(expense);
     });
+
+    /*
+      Это специальный виджет, который управляет SnackBar'ами, MaterialBanners и т.п. внутри Scaffold.
+      По сути, это «почтальон», который доставляет и показывает сообщения над текущим экраном.
+
+      .of(context) ищет в дереве виджетов ближайший ScaffoldMessenger, связанный с твоим Scaffold.
+      Когда ты вызываешь showSnackBar(...), он говорит: «Эй, ближайший ScaffoldMessenger, 
+      покажи SnackBar поверх экрана».
+    */
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        duration: const Duration(seconds: 3),
+        content: const Text('Expense deleted.'),
+        action: SnackBarAction(
+          label: 'Undo',
+          onPressed: () {
+            setState(() {
+              _registeredExpenses.insert(expenseIndex, expense);
+            });
+          },
+        ),
+      ),
+    );
   }
 
   // Mock Data
@@ -60,6 +87,19 @@ class _ExpensesState extends State<Expenses> {
   // Build
   @override
   Widget build(BuildContext context) {
+    Widget mainContent = const Center(
+      child: Text('No expenses found. Start adding some!'),
+    );
+
+    if (_registeredExpenses.isNotEmpty) {
+      mainContent = ExpensesList(
+        expenses: _registeredExpenses,
+        onRemoveExpense: (expense) {
+          _removeExpense(expense);
+        },
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Flutter Expense Tracker"),
@@ -83,14 +123,7 @@ class _ExpensesState extends State<Expenses> {
       body: Column(
         children: [
           const Text('The chart'),
-          Expanded(
-            child: ExpensesList(
-              expenses: _registeredExpenses,
-              onRemoveExpense: (expense) {
-                _registeredExpenses.remove(expense);
-              },
-            ),
-          ),
+          Expanded(child: mainContent),
         ],
       ),
     );
