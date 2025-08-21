@@ -45,13 +45,13 @@ class _ExpensesState extends State<Expenses> {
     });
 
     /*
-      Это специальный виджет, который управляет SnackBar'ами, MaterialBanners и т.п. внутри Scaffold.
-      По сути, это «почтальон», который доставляет и показывает сообщения над текущим экраном.
-
+     ScaffoldMessenger — это менеджер временных сообщений (SnackBar, MaterialBanner) внутри Scaffold.
       .of(context) ищет в дереве виджетов ближайший ScaffoldMessenger, связанный с твоим Scaffold.
       Когда ты вызываешь showSnackBar(...), он говорит: «Эй, ближайший ScaffoldMessenger, 
       покажи SnackBar поверх экрана».
     */
+
+    ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         duration: const Duration(seconds: 3),
