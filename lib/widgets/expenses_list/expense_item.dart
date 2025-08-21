@@ -35,8 +35,29 @@ class ExpenseItem extends StatelessWidget {
             //       ],
             //     ),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(expense.title),
+                Text(
+                  expense.title,
+                  /*
+                    Theme.of(context)
+                    Достаёт текущую глобальную тему (ThemeData), которая была задана в 
+                    MaterialApp(theme: ThemeData(...)).
+                    Внутри Flutter тема хранится в дереве виджетов через InheritedWidget, 
+                    и Theme.of(context) — это способ получить её для данного BuildContext.
+
+                    .textTheme
+                    Из ThemeData берётся набор стандартных текстовых стилей (TextTheme).
+                    В TextTheme есть разные преднастроенные стили: titleLarge, bodyMedium, labelSmall и т.д.
+                    Эти стили соответствуют иерархии типографики Material Design 3.
+
+                    .titleLarge
+                    Это один конкретный стиль текста из темы (TextStyle).
+                    По умолчанию — крупный заголовок (размер, вес шрифта, цвет), 
+                    но его можно переопределить в ThemeData.textTheme.
+                  */
+                  style: Theme.of(context).textTheme.titleLarge, 
+                  ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
