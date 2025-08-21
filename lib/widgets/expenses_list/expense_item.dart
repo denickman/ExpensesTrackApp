@@ -69,7 +69,7 @@ class ExpenseItem extends StatelessWidget {
                     const Spacer(), // это гибкий заполнитель пространства внутри Row, Column или Flex.
                     Row(
                       children: [
-                        Icon(categoryItems[expense.category]),
+                        Icon(categoryIcons[expense.category]),
                         const SizedBox(width: 8),
                         Text(expense.formattedDate),
                       ],

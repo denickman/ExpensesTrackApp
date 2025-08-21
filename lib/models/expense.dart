@@ -15,7 +15,7 @@ enum Category {
 }
 
 // Map - Dictionary
-const categoryItems = {
+const categoryIcons = {
   Category.food: Icons.lunch_dining,
   Category.travel: Icons.flight_takeoff,
   Category.leisure: Icons.movie,
@@ -55,4 +55,39 @@ class Expense {
   }
 
   String get formattedDateAlternative => formatter.format(date);
+}
+
+
+class ExpenseBucket {
+
+  const ExpenseBucket({
+    required this.category, 
+    required this.expenses
+  });
+
+// define your own custom constructor (convinience init)
+// allExpenses → это вспомогательный параметр, который используется только внутри конструктора 
+// (чтобы отфильтровать список), и не хранится в классе как свойство.
+// Поэтому его объявляем как обычный параметр без this..
+
+//: expenses = ... ?
+// Это так называемый initializer list — блок, который выполняется до конструктора и 
+// позволяет проинициализировать final поля.
+
+  ExpenseBucket.forCategory(
+    List<Expense> allExpenses, this.category
+    ) : expenses = allExpenses.where((expense) => expense.category == category)
+    .toList();
+
+  final Category category;
+  final List<Expense> expenses;
+
+  double get totalExpenses {
+    double sum = 0;
+
+  for (final expense in expenses) {
+    sum += expense.amount;
+  }
+    return sum;
+  }
 }
