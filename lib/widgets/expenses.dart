@@ -16,14 +16,23 @@ class Expenses extends StatefulWidget {
 }
 
 class _ExpensesState extends State<Expenses> {
-
   // when you extends class from State flutter automatically add a context property
   // to your class behind the scenes
-  // context - an object of meta data collections 
+  // context - an object of meta data collections
 
   // Methods
   void _openAddExpenseOverlay() {
-    showModalBottomSheet(context: context, builder: (ctx) => const NewExpense());
+    showModalBottomSheet(
+      isScrollControlled: true, // modal widget will take full size of the screen to present
+      context: context,
+      builder: (ctx) => NewExpense(onAddExpense: _addExpense),
+    );
+  }
+
+  void _addExpense(Expense expense) {
+    setState(() {
+      _registeredExpenses.add(expense);
+    });
   }
 
   // Mock Data
@@ -51,8 +60,8 @@ class _ExpensesState extends State<Expenses> {
         actions: [
           IconButton(
             onPressed: _openAddExpenseOverlay,
-            icon: const Icon(Icons.add)
-            ),
+            icon: const Icon(Icons.add),
+          ),
         ],
       ),
       /*

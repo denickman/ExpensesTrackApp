@@ -2,7 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:third_app/models/expense.dart';
 
 class NewExpense extends StatefulWidget {
-  const NewExpense({super.key});
+  /*
+  Все поля, которые ты передаёшь в конструктор NewExpense, хранятся внутри объекта widget.
+  Это специальное свойство, которое Flutter автоматически предоставляет в каждом классе State.
+
+  State отделён от Widget.
+  Поэтому всё, что передано в конструктор NewExpense, доступно внутри State только через widget.
+
+  widget в классе State — это ссылка на сам StatefulWidget (NewExpense).
+  Через него мы получаем доступ к параметрам конструктора (onAddExpense, key, и т.п.), 
+  которые были переданы при создании виджета. 
+  */
+  const NewExpense({super.key, required this.onAddExpense});
+
+  final void Function(Expense expense) onAddExpense;
 
   @override
   State<NewExpense> createState() {
@@ -58,12 +71,56 @@ class _NewExpenseState extends State<NewExpense> {
     });
   }
 
+  void _submitExpenseData() {
+    final enteredAmount = double.tryParse(
+      _amountController.text,
+    ); // tryParse("abc") => null
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
+    if (_titleController.text.trim().isEmpty ||
+        amountIsInvalid ||
+        _selectedDate == null ||
+        _selectedCategory == null) {
+      // show error message
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: Text('Invalid input'),
+          content: const Text(
+            'Please make sure a valid title, amount, date and category was entered...',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text('Okay'),
+            ),
+          ],
+        ),
+      );
+      return;
+    }
+
+    // proceed if all required data exist
+
+    widget.onAddExpense(
+      Expense(
+        title: _titleController.text,
+        amount: enteredAmount,
+        date: _selectedDate!,
+        category: _selectedCategory!,
+      ),
+    );
+
+     Navigator.pop(context);
+  }
+
   // Lifecycle
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
       child: Column(
         children: [
           TextField(
@@ -114,29 +171,36 @@ class _NewExpenseState extends State<NewExpense> {
             ],
           ),
 
+          const SizedBox(height: 16),
+
           Row(
             children: [
-
               DropdownButton(
-                value: _selectedCategory, // if null we see hint 
+                value: _selectedCategory, // if null we see hint
                 hint: const Text("Choose category"),
                 items: Category.values
-                .map( // map - always retur iterable 
-                  (categoryItem) => DropdownMenuItem(
-                    value: categoryItem,
-                  child: Text(
-                    categoryItem.name.toString(),
-                  ),
-                ),
-                ).toList(),
+                    .map(
+                      // map - always retur iterable
+                      (categoryItem) => DropdownMenuItem(
+                        value: categoryItem,
+                        child: Text(
+                          categoryItem.name
+                              .toUpperCase(), // .toString() returns "Category.food"
+                        ),
+                      ),
+                    )
+                    .toList(),
                 onChanged: (value) {
-                      setState(() {
-                        _selectedCategory = value;
-                      });
-                }),
-                
-              
+                  // if (value == null) {
+                  //   return;
+                  // }
+                  setState(() {
+                    _selectedCategory = value;
+                  });
+                },
+              ),
 
+              const Spacer(),
 
               TextButton(
                 onPressed: () {
@@ -146,10 +210,7 @@ class _NewExpenseState extends State<NewExpense> {
               ),
 
               ElevatedButton(
-                onPressed: () {
-                  print(_titleController.text);
-                  print(_amountController.text);
-                },
+                onPressed: _submitExpenseData,
                 child: Text('Save Expense'),
               ),
             ],

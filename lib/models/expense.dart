@@ -5,6 +5,11 @@ import 'package:intl/intl.dart';
 final formatter = DateFormat.yMd();
 final uuid = Uuid();
 
+/*
+.values → список (List) всех значений перечисления, в порядке их объявления.
+.name → строковое имя константы (как она записана в коде).
+.index → порядковый номер (начиная с 0).
+*/
 enum Category {
   food, travel, leisure, work 
 }
