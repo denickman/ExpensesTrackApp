@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:third_app/widgets/expenses_list/expenses_list.dart';
 import 'package:third_app/models/expense.dart';
-import 'package:third_app/widgets/expenses.dart';
 import 'package:third_app/widgets/new_expense.dart';
 
 class Expenses extends StatefulWidget {
@@ -23,7 +22,8 @@ class _ExpensesState extends State<Expenses> {
   // Methods
   void _openAddExpenseOverlay() {
     showModalBottomSheet(
-      isScrollControlled: true, // modal widget will take full size of the screen to present
+      isScrollControlled:
+          true, // modal widget will take full size of the screen to present
       context: context,
       builder: (ctx) => NewExpense(onAddExpense: _addExpense),
     );
@@ -32,6 +32,12 @@ class _ExpensesState extends State<Expenses> {
   void _addExpense(Expense expense) {
     setState(() {
       _registeredExpenses.add(expense);
+    });
+  }
+
+  void _removeExpense(Expense expense) {
+    setState(() {
+      _registeredExpenses.remove(expense);
     });
   }
 
@@ -77,7 +83,14 @@ class _ExpensesState extends State<Expenses> {
       body: Column(
         children: [
           const Text('The chart'),
-          Expanded(child: ExpensesList(expenses: _registeredExpenses)),
+          Expanded(
+            child: ExpensesList(
+              expenses: _registeredExpenses,
+              onRemoveExpense: (expense) {
+                _registeredExpenses.remove(expense);
+              },
+            ),
+          ),
         ],
       ),
     );

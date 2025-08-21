@@ -4,9 +4,15 @@ import 'package:third_app/widgets/expenses_list/expense_item.dart';
 
 class ExpensesList extends StatelessWidget {
 
-  const ExpensesList({super.key, required this.expenses});
+  const ExpensesList({
+    super.key, 
+    required this.expenses,
+    required this.onRemoveExpense
+    });
 
   final List<Expense> expenses;
+
+  final void Function(Expense expense) onRemoveExpense;
 
 
   @override
@@ -26,7 +32,21 @@ class ExpensesList extends StatelessWidget {
       // itemBuilder — функция, которая вызывается Flutter’ом для каждого элемента, 
       // когда он появляется в зоне видимости.
       itemCount: expenses.length, 
-      itemBuilder: (ctx, index) => ExpenseItem(expenses[index]),
+      /*
+      Dismissible — это виджет, который можно свайпнуть, чтобы удалить.
+      Flutter должен знать, какой именно элемент списка был свайпнут, чтобы:
+      правильно отрисовать анимацию удаления;
+      не перепутать элементы, когда список обновится.
+👉    Если не задать key, то Flutter не сможет различить элементы, и поведение может быть багованным 
+     (например, удалится не тот элемент или анимация будет странной).
+      */
+      itemBuilder: (ctx, index) => Dismissible(
+        key: ValueKey(expenses[index]), 
+        onDismissed: (direction) { 
+          onRemoveExpense(expenses[index]);
+        },
+        child: ExpenseItem(expenses[index])
+        ),
       ); 
  
   }
