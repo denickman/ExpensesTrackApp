@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:third_app/widgets/expenses.dart';
 // for lock screen orientation
-import 'package:flutter/services.dart';
+// import 'package:flutter/services.dart';
 
 
 // Scheme.fromSeed - Это фабричный конструктор,
@@ -33,16 +33,16 @@ WidgetsFlutterBinding.ensureInitialized() гарантирует, что у те
 может быть ошибка
 📌 То есть — это “подготовка Flutter к работе с системными вызовами”.
 */
-   WidgetsFlutterBinding.ensureInitialized();
+  //  WidgetsFlutterBinding.ensureInitialized();
 
 // “Разреши приложению работать только в указанной ориентации”.
 // setPreferredOrientations возвращает Future.
 // То есть Flutter сначала попросит систему зафиксировать ориентацию, и только потом запустит runApp.
 // Это гарантирует, что приложение не начнёт строиться в “неправильной” ориентации.
 
-  SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
-    fn,
-  ) {
+  // SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]).then((
+  //   fn,
+  // ) {
     runApp(
       MaterialApp(
         // Dark theme
@@ -102,5 +102,5 @@ WidgetsFlutterBinding.ensureInitialized() гарантирует, что у те
         home: Expenses(),
       ),
     );
-  });
+  // });
 }

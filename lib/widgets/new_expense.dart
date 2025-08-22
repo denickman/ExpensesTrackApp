@@ -119,103 +119,143 @@ class _NewExpenseState extends State<NewExpense> {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 48, 16, 16),
-      child: Column(
-        children: [
-          TextField(
-            controller: _titleController,
-            maxLength: 50,
-            // keyboardType: TextInputType.text, // - TextInputType.text established by default
-            decoration: const InputDecoration(
-              // placeholder
-              label: Text('Title'),
-            ),
-          ),
 
-          Row(
+/*
+.viewInsets - показывает области экрана, которые перекрыты "системными UI-элементами" (обычно клавиатура).
+По сути — это «внутренние вставки» (insets), которые нужно учесть, чтобы твой контент 
+не оказался под клавиатурой или системной навигацией.
+*/
+final keyboardSpace = MediaQuery.of(context).viewInsets.bottom;
+
+/*
+SingleChildScrollView - позволяет прокручивать содержимое, если оно не помещается на экране.
+Работает только с одним ребёнком (отсюда и название).
+Обычно ребёнком бывает Column или Row.
+Если контента меньше, чем экран → скролла нет.
+Если контента больше → появляется скролл (по вертикали или горизонтали).
+
+
+SizedBox(height: double.infinity - почему добавлено еще ? 
+
+SingleChildScrollView по своей природе растягивается только по содержимому.
+Если ребёнок (Column) не ограничен по высоте, то:
+он возьмёт высоту ровно под свои элементы (например, 400 px).
+и SingleChildScrollView тоже станет такой высоты.
+
+SizedBox(height: double.infinity) нужен, чтобы:
+заставить форму занимать всю высоту экрана (ограничить SingleChildScrollView от "схлопывания");
+корректно работать с клавиатурой и паддингами;
+позволить скроллу появляться только тогда, когда реально не хватает места.
+
+🔹 Что это даёт на практике
+Когда контента мало → форма всё равно растягивается на высоту экрана, 
+и элементы «прижимаются» куда надо (например, паддинг снизу учитывает клавиатуру).
+
+Когда контента много → SingleChildScrollView может нормально скроллиться, 
+потому что у него теперь есть «рамка» (высота экрана).
+*/
+    return SizedBox(
+      height: double.infinity,
+      child: SingleChildScrollView(
+        child: Padding(
+          padding: EdgeInsets.fromLTRB(16, 48, 16, keyboardSpace + 16),
+          child: Column(
             children: [
-              Expanded(
-                child: TextField(
-                  controller: _amountController,
-                  keyboardType: TextInputType.number,
-
-                  // keyboardType: TextInputType.text, // - TextInputType.text established by default
-                  decoration: const InputDecoration(
-                    // placeholder
-                    prefixText: '\$ ',
-                    label: Text('Amount'),
-                  ),
+              TextField(
+                controller: _titleController,
+                maxLength: 50,
+                // keyboardType: TextInputType.text, // - TextInputType.text established by default
+                decoration: const InputDecoration(
+                  // placeholder
+                  label: Text('Title'),
                 ),
               ),
-
-              const SizedBox(width: 16),
-
-              Expanded(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      _selectedDate == null
-                          ? 'No date selected'
-                          : formatter.format(_selectedDate!),
-                    ),
-                    IconButton(
-                      onPressed: _presentDatePicker,
-                      icon: const Icon(Icons.calendar_month),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          const SizedBox(height: 16),
-
-          Row(
-            children: [
-              DropdownButton(
-                value: _selectedCategory, // if null we see hint
-                hint: const Text("Choose category"),
-                items: Category.values
-                    .map(
-                      // map - always retur iterable
-                      (categoryItem) => DropdownMenuItem(
-                        value: categoryItem,
-                        child: Text(
-                          categoryItem.name
-                              .toUpperCase(), // .toString() returns "Category.food"
-                        ),
+        
+              Row(
+                children: [
+                  Expanded(
+                    child: TextField(
+                      controller: _amountController,
+                      keyboardType: TextInputType.number,
+        
+                      // keyboardType: TextInputType.text, // - TextInputType.text established by default
+                      decoration: const InputDecoration(
+                        // placeholder
+                        prefixText: '\$ ',
+                        label: Text('Amount'),
                       ),
-                    )
-                    .toList(),
-                onChanged: (value) {
-                  // if (value == null) {
-                  //   return;
-                  // }
-                  setState(() {
-                    _selectedCategory = value;
-                  });
-                },
+                    ),
+                  ),
+        
+                  const SizedBox(width: 16),
+        
+                  Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          _selectedDate == null
+                              ? 'No date selected'
+                              : formatter.format(_selectedDate!),
+                        ),
+                        IconButton(
+                          onPressed: _presentDatePicker,
+                          icon: const Icon(Icons.calendar_month),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-
-              const Spacer(),
-
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("Cancel"),
-              ),
-
-              ElevatedButton(
-                onPressed: _submitExpenseData,
-                child: Text('Save Expense'),
+        
+              const SizedBox(height: 16),
+        
+              Row(
+                children: [
+                  DropdownButton(
+                    value: _selectedCategory, // if null we see hint
+                    hint: const Text("Choose category"),
+                    items: Category.values
+                        .map(
+                          // map - always retur iterable
+                          (categoryItem) => DropdownMenuItem(
+                            value: categoryItem,
+                            child: Text(
+                              categoryItem.name
+                                  .toUpperCase(), // .toString() returns "Category.food"
+                            ),
+                          ),
+                        )
+                        .toList(),
+                    onChanged: (value) {
+                      // if (value == null) {
+                      //   return;
+                      // }
+                      setState(() {
+                        _selectedCategory = value;
+                      });
+                    },
+                  ),
+        
+                  const Spacer(),
+        
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Cancel"),
+                  ),
+        
+                  ElevatedButton(
+                    onPressed: _submitExpenseData,
+                    child: Text('Save Expense'),
+                  ),
+                ],
               ),
             ],
           ),
-        ],
+        ),
       ),
     );
   }
