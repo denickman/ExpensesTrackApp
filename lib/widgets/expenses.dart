@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:third_app/widgets/charts/chart.dart';
 import 'package:third_app/widgets/expenses_list/expenses_list.dart';
@@ -88,6 +87,11 @@ class _ExpensesState extends State<Expenses> {
   // Build
   @override
   Widget build(BuildContext context) {
+
+    // to know how much width we have available 
+    final width = MediaQuery.of(context).size.width;
+    print(width);
+  
     Widget mainContent = const Center(
       child: Text('No expenses found. Start adding some!'),
     );
@@ -121,12 +125,23 @@ class _ExpensesState extends State<Expenses> {
 
       Solving: use Expanded, SizedBox
       */
-      body: Column(
+      body: width < 600 ?
+      Column(
         children: [
           Chart(expenses: _registeredExpenses),
           Expanded(child: mainContent),
-        ],
+        ], 
+      ) : 
+      // поскольку и Row и Chart - имеют width infinity ты получишь ошибку отображения 
+      // Row по горизонтали даёт детям неограниченную ширину (unbounded) 
+      // если они не завернуты в Expanded/Flexible
+      Row(
+        children: [
+          Expanded(child: Chart(expenses: _registeredExpenses)),
+          Expanded(child: mainContent),
+        ]
       ),
     );
   }
 }
+
